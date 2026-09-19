@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, Response, HTTPException
-from model.database import get_pool
-from middleware.common import authentication
-from schema.common import SignIn, Signup
-from service.auth_service import signin
-from service.common_service import home, signup, leave_history
+from app.db.database import get_pool
+from app.dependencies.auth import authentication
+from app.schemas.common import SignIn, Signup
+from app.services.auth_service import signin
+from app.services.common_service import home, signup, leave_history
 
 router = APIRouter()
 

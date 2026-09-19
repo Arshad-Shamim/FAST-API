@@ -1,7 +1,7 @@
 import bcrypt
 from fastapi import HTTPException
-from model.users import users_repo
-from auth import create_token
+from app.repositories.users import users_repo
+from app.core.security import create_token
 
 async def signin(conn, data):
     rows = await users_repo.fetch(conn, "signIn", ["password","role"], data.email)

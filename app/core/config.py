@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+
 load_dotenv()
 
 DB_HOST = os.getenv("dbHost", "localhost")
@@ -9,8 +10,8 @@ DB_NAME = os.getenv("database", "leave_manager")
 DB_PASSWORD = os.getenv("password", "")
 DB_SSL = os.getenv("DB_SSL", "true").lower() == "true"
 
-JWT_SECRET = os.getenv("JWT_SECRET", "hello users")
-JWT_ALGORITHM = "HS256"
+JWT_SECRET = os.getenv("JWT_SECRET", "")
+JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
 
 CLOUDINARY_CLOUD_NAME = os.getenv("CLOUDINARY_CLOUD_NAME", "")
 CLOUDINARY_API_KEY = os.getenv("CLOUDINARY_API_KEY", "")

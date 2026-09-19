@@ -1,10 +1,10 @@
 from datetime import datetime
 import bcrypt
-from model.users import users_repo
-from model.users_leave_history import history_repo
-from model.users_leave_status import status_repo
-from model.time_table import timetable_repo
-from utils.dates import increase_dates, count_days_between_dates
+from app.repositories.users import users_repo
+from app.repositories.leave_history import history_repo
+from app.repositories.leave_status import status_repo
+from app.repositories.timetable import timetable_repo
+from app.utils.dates import increase_dates, count_days_between_dates
 
 async def add_teacher(conn, data):
     data = data.copy()

@@ -1,7 +1,7 @@
 import bcrypt
-from model.users import users_repo
-from model.users_leave_history import history_repo
-from utils.dates import increase_dates
+from app.repositories.users import users_repo
+from app.repositories.leave_history import history_repo
+from app.utils.dates import increase_dates
 
 async def home(conn, email, role):
     rows = await users_repo.fetch(conn, "getHome", ["*"], email)

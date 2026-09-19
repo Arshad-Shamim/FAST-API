@@ -1,16 +1,14 @@
 from fastapi import APIRouter, Depends, File, Form, UploadFile, Query
-from model.database import get_pool
-from middleware.common import authentication
-from middleware.admin import admin_auth
-from service.admin_service import add_teacher,pending,application_details,application_response,teachers,substitution,update_timetable,get_timetable
-from service.cloudinary_service import upload_photo
-from schema.leave import ApplicationResponse
-from schema.timetable import TimeTable
+from app.db.database import get_pool
+from app.dependencies.auth import authentication
+from app.dependencies.roles import administrator
+from app.services.admin_service import add_teacher,pending,application_details,application_response,teachers,substitution,update_timetable,get_timetable
+from app.services.cloudinary_service import upload_photo
+from app.schemas.leave import ApplicationResponse
+from app.schemas.timetable import TimeTable
 
 router = APIRouter()
 
-async def administrator(identity=Depends(authentication)):
-    return admin_auth(identity)
 
 @router.post("/teacher")
 async def teacher(identity=Depends(administrator), photo: UploadFile=File(...),

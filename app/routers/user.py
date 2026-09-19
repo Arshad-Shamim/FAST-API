@@ -1,14 +1,12 @@
 from fastapi import APIRouter, Depends
-from model.database import get_pool
-from middleware.common import authentication
-from middleware.user import user_auth
-from schema.leave import Application
-from service.user_service import submit_application
+from app.db.database import get_pool
+from app.dependencies.auth import authentication
+from app.dependencies.roles import employee
+from app.schemas.leave import Application
+from app.services.user_service import submit_application
 
 router = APIRouter()
 
-async def employee(identity=Depends(authentication)):
-    return user_auth(identity)
 
 @router.post("/application")
 async def application(data: Application, identity=Depends(employee)):

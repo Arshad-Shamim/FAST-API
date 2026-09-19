@@ -1,18 +1,3 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from api.index import app as api_app
-from config import FRONTEND_ORIGIN
+from app.main import app
 
-app = FastAPI(title="Leave Manager API")
-
-@app.get("/")
-def firstFuncation():
-    return {"msg":"This is first route"}
-
-origins = ["*"] if FRONTEND_ORIGIN == "*" else [FRONTEND_ORIGIN]
-app.add_middleware(CORSMiddleware, allow_origins=origins,
-                   allow_credentials=True,
-                   allow_methods=["GET","POST","PUT","DELETE","OPTIONS"],
-                   allow_headers=["*"])
-app.mount("", api_app)
-
+__all__ = ["app"]

@@ -1,7 +1,7 @@
 from fastapi import UploadFile
 import cloudinary
 import cloudinary.uploader
-from config import CLOUDINARY_CLOUD_NAME,CLOUDINARY_API_KEY,CLOUDINARY_API_SECRET,CLOUDINARY_FOLDER
+from app.core.config import CLOUDINARY_CLOUD_NAME,CLOUDINARY_API_KEY,CLOUDINARY_API_SECRET,CLOUDINARY_FOLDER
 
 if CLOUDINARY_CLOUD_NAME and CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET:
     cloudinary.config(cloud_name=CLOUDINARY_CLOUD_NAME,

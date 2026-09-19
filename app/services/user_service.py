@@ -1,5 +1,5 @@
-from model.users_leave_history import history_repo
-from model.users_leave_status import status_repo
+from app.repositories.leave_history import history_repo
+from app.repositories.leave_status import status_repo
 
 async def submit_application(conn, email, data):
     data = data.copy()
