@@ -20,14 +20,13 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
-
-    @app.get("/")
-    def firstFn():
-        return {"msg":"welcome"}
     
     application.include_router(common.router)
     application.include_router(admin.router, prefix="/admin")
     application.include_router(user.router, prefix="/user")
+    @app.get("/")
+    def firstFn():
+        return {"msg":"welcome"}
 
     return application
 
