@@ -39,5 +39,6 @@ async def get_leave_history(identity=Depends(authentication)):
         return await leave_history(conn, identity["email"], identity["role"])
 
 @router.post("/file")
-async def upload_file(file_title:str=Form(...),receivers:list[str]=Form(...),file: UploadFile=File(...), identity=Depends(authentication)):
-    return await upload(user_id="dfsd",file=file,file_title=file_title,receivers=receivers)
+# async def upload_file(file_title:str=Form(...),receivers:list[str]=Form(...),file: UploadFile=File(...), identity=Depends(authentication)):
+async def upload_file(user_id:str=Form(...),file_title:str=Form(...),receivers:list[str]=Form(...),file: UploadFile=File(...)):
+    return await upload(user_id=user_id,file=file,file_title=file_title,receivers=receivers)
