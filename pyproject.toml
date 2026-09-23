@@ -11,5 +11,5 @@ dependencies = [
     "bcrypt>=4.1,<6",
     "python-multipart>=0.0.9,<1",
     "cloudinary>=1.41,<2",
-    "supabase",
+    "supabase>=2.0,<3",
 ]
