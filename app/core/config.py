@@ -19,3 +19,6 @@ CLOUDINARY_API_SECRET = os.getenv("CLOUDINARY_API_SECRET", "")
 CLOUDINARY_FOLDER = os.getenv("CLOUDINARY_FOLDER", "Leave-Portal-Users")
 
 FRONTEND_ORIGIN = os.getenv("FRONTEND_ORIGIN", "*")
+
+DB_URL = os.getenv("SUPABASE_URL","")
+DB_API_KEY = os.getenv("SUPABASE_API_KEY","")

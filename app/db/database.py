@@ -1,6 +1,7 @@
 import asyncpg
+from  supabase import create_client
 from app.core.config import (
-    DB_HOST, DB_PORT, DB_USER, DB_NAME, DB_PASSWORD, DB_SSL
+    DB_HOST, DB_PORT, DB_USER, DB_NAME, DB_PASSWORD, DB_SSL, DB_API_KEY, DB_URL
 )
 
 _pool = None
@@ -34,3 +35,6 @@ async def close_pool():
     if _pool is not None:
         await _pool.close()
         _pool = None
+
+
+supabase = create_client(DB_URL,DB_API_KEY)

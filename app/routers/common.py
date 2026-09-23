@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends, Response, HTTPException
+from fastapi import APIRouter, Depends, Response, HTTPException, File, UploadFile, Form
 from app.db.database import get_pool
 from app.dependencies.auth import authentication
 from app.schemas.common import SignIn, Signup
 from app.services.auth_service import signin
-from app.services.common_service import home, signup, leave_history
+from app.services.common_service import home, signup, leave_history, upload
 
 router = APIRouter()
 
@@ -37,3 +37,7 @@ async def get_leave_history(identity=Depends(authentication)):
     pool = await get_pool()
     async with pool.acquire() as conn:
         return await leave_history(conn, identity["email"], identity["role"])
+
+@router.post("/file")
+async def upload_file(file_title:str=Form(...),receivers:list[str]=Form(...),file: UploadFile=File(...), identity=Depends(authentication)):
+    return await upload(user_id="dfsd",file=file,file_title=file_title,receivers=receivers)

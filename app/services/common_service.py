@@ -2,6 +2,8 @@ import bcrypt
 from app.repositories.users import users_repo
 from app.repositories.leave_history import history_repo
 from app.utils.dates import increase_dates
+from fastapi import UploadFile, File, HTTPException, Form
+from app.db.database import supabase
 
 async def home(conn, email, role):
     rows = await users_repo.fetch(conn, "getHome", ["*"], email)
@@ -27,3 +29,27 @@ async def leave_history(conn, email, role):
     rows = await history_repo.fetch(conn, "leaveHistory", email=email, role=role)
     rows = increase_dates(rows, ["application_date","start_date","end_date"])
     return {"status":1,"data":rows,"msg":"success","role":0 if role=="employee" else 1}
+
+async def upload(user_id: str, file: UploadFile, file_title:str=Form(...), receivers: list[str]=Form(...)):
+
+    file_content = await file.read()
+
+    storage_path = f"{user_id}/{file.filename}"
+
+    response = supabase.storage \
+        .from_("documents") \
+        .upload(
+            storage_path,
+            file_content,
+            {
+                "content-type": file.content_type
+            }
+        )
+
+
+    return {
+        "message": "File uploaded successfully",
+        "file_name": file.filename,
+        "storage_path": storage_path
+    }
+
