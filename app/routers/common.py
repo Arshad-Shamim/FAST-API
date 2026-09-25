@@ -4,6 +4,7 @@ from app.dependencies.auth import authentication
 from app.schemas.common import SignIn, Signup
 from app.services.auth_service import signin
 from app.services.common_service import home, signup, leave_history, upload
+from datetime import date
 
 router = APIRouter()
 
@@ -41,4 +42,6 @@ async def get_leave_history(identity=Depends(authentication)):
 @router.post("/file")
 # async def upload_file(file_title:str=Form(...),receivers:list[str]=Form(...),file: UploadFile=File(...), identity=Depends(authentication)):
 async def upload_file(user_id:str=Form(...),file_title:str=Form(...),receivers:list[str]=Form(...),file: UploadFile=File(...)):
-    return await upload(user_id=user_id,file=file,file_title=file_title,receivers=receivers)
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        return await upload(conn,user_id=user_id,file=file,file_title=file_title,receivers=receivers)
