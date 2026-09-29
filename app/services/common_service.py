@@ -75,6 +75,7 @@ async def upload(conn,user_id: str, file: UploadFile, file_title:str=Form(...), 
                 "receiver":receiver,
                 "user_id":user_id
             }
+            print(data2)
             res2 = await document_receivers.store(fn="upload",conn=conn,data=data2)
             print(res2)
 
@@ -92,4 +93,108 @@ async def upload(conn,user_id: str, file: UploadFile, file_title:str=Form(...), 
             "message": "File upload failed",
             "error": str(e)
         }
+
+
+import base64
+import traceback
+
+
+async def fetch(conn, user_id: str, role: str):
+    response = {
+        "status": 0,
+        "message": "",
+        "send_documents": [],
+        "receive_documents": []
+    }
+
+    try:
+        # --------------------------------------------------
+        # Documents uploaded by the user
+        # --------------------------------------------------
+        res1 = await document_metadata_repo.fetch(
+            conn,
+            "upload",
+            user_id=user_id
+        )
+
+        send_documents = []
+
+        for res in res1:
+
+            file_data = None
+
+            if res["file_path"]:
+                file_bytes = (
+                    supabase.storage
+                    .from_("documents")
+                    .download(res["file_path"])
+                )
+
+                # bytes -> Base64 string
+                file_data = base64.b64encode(file_bytes).decode("utf-8")
+
+            send_file_data = {
+                "file_title": res["file_title"],
+                "date": res["date"].isoformat()
+                    if res["date"] else None,
+                "size": float(res["size"])
+                    if res["size"] is not None else 0,
+                "file_data": file_data
+            }
+
+            send_documents.append(send_file_data)
+
+        response["send_documents"] = send_documents
+
+        # --------------------------------------------------
+        # Documents received by the user
+        # --------------------------------------------------
+        res2 = await document_receivers.fetch(
+            conn,
+            "upload",
+            role=role
+        )
+
+        receive_documents = []
+
+        for res in res2:
+
+            file_data = None
+
+            if res["file_path"]:
+                file_bytes = (
+                    supabase.storage
+                    .from_("documents")
+                    .download(res["file_path"])
+                )
+
+                # bytes -> Base64 string
+                file_data = base64.b64encode(file_bytes).decode("utf-8")
+
+            receiver_file_data = {
+                "file_title": res["file_title"],
+                "date": res["date"].isoformat()
+                    if res["date"] else None,
+                "size": float(res["size"])
+                    if res["size"] is not None else 0,
+                "file_data": file_data
+            }
+
+            receive_documents.append(receiver_file_data)
+
+        response["receive_documents"] = receive_documents
+
+        response["status"] = 1
+        response["message"] = "Data fetched successfully"
+
+    except Exception as e:
+
+        print("Fetch documents error:", e)
+        traceback.print_exc()
+
+        response["status"] = 0
+        response["message"] = "Something went wrong"
+        response["error"] = str(e)
+
+    return response
 

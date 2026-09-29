@@ -5,7 +5,7 @@ class DocumentMetadataRepository:
         if fn_name == "upload":
             return await conn.fetch(
                 """
-                SELECT user_id, file_title, date, size
+                SELECT user_id, file_title, date, size, file_path
                 FROM "DOCUMENTS-METADATA"
                 WHERE user_id=$1
                 ORDER BY date DESC

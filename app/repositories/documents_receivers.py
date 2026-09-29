@@ -5,12 +5,18 @@ class DOCUMENTSRECEIVERS:
         if fn_name == "upload":
             return await conn.fetch(
                 """
-                SELECT receivers
-                FROM "DOCUMENT-RECEIVERS"
-                WHERE user_id=$1
-                ORDER BY id DESC
+                SELECT 
+                    t1.file_title,
+                    t2.date,
+                    t2.size,
+                    t2.file_path
+                FROM "DOCUMENT-RECEIVERS" AS t1
+                RIGHT JOIN "DOCUMENTS-METADATA" AS t2
+                    ON t1.user_id = t2.user_id
+                    AND t1.file_title = t2.file_title
+                WHERE t1.receiver = $1
                 """,
-                p["user_id"]
+                p["role"]
             )
 
         return []

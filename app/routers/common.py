@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends, Response, HTTPException, File, UploadFile, Form
+from fastapi import APIRouter, Depends, Response, HTTPException, File, UploadFile, Form, Header
 from app.db.database import get_pool
 from app.dependencies.auth import authentication
 from app.schemas.common import SignIn, Signup
 from app.services.auth_service import signin
-from app.services.common_service import home, signup, leave_history, upload
+from app.services.common_service import home, signup, leave_history, upload, fetch
 from datetime import date
 
 router = APIRouter()
@@ -45,3 +45,9 @@ async def upload_file(user_id:str=Form(...),file_title:str=Form(...),receivers:l
     pool = await get_pool()
     async with pool.acquire() as conn:
         return await upload(conn,user_id=user_id,file=file,file_title=file_title,receivers=receivers)
+
+@router.get("/file")
+async def fetch_document(user_id:str=Header(...), role:str=Header(...)):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        return await fetch(conn,user_id=user_id,role=role)
