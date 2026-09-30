@@ -39,7 +39,7 @@ async def upload(conn,user_id: str, file: UploadFile, file_title:str=Form(...), 
     try:
         file_content = await file.read()
 
-        storage_path = f"{user_id}/{file.filename}"
+        storage_path = f"{user_id}/{file_title}"
 
         response = supabase.storage \
             .from_("documents") \
@@ -80,7 +80,8 @@ async def upload(conn,user_id: str, file: UploadFile, file_title:str=Form(...), 
             print(res2)
 
         return {
-            "message": "File uploaded successfully",
+            'status':1,
+            "msg": "File uploaded successfully",
             "file_name": file.filename,
             "storage_path": storage_path
         }
@@ -90,8 +91,8 @@ async def upload(conn,user_id: str, file: UploadFile, file_title:str=Form(...), 
         import traceback
         traceback.print_exc()
         return {
-            "message": "File upload failed",
-            "error": str(e)
+            'status':0,
+            "msg":str(e.message)
         }
 
 
@@ -185,7 +186,7 @@ async def fetch(conn, user_id: str, role: str):
         response["receive_documents"] = receive_documents
 
         response["status"] = 1
-        response["message"] = "Data fetched successfully"
+        response["msg"] = "Data fetched successfully"
 
     except Exception as e:
 
@@ -193,7 +194,7 @@ async def fetch(conn, user_id: str, role: str):
         traceback.print_exc()
 
         response["status"] = 0
-        response["message"] = "Something went wrong"
+        response["msg"] = str(e.message)
         response["error"] = str(e)
 
     return response
