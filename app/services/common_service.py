@@ -75,9 +75,7 @@ async def upload(conn,user_id: str, file: UploadFile, file_title:str=Form(...), 
                 "receiver":receiver,
                 "user_id":user_id
             }
-            print(data2)
             res2 = await document_receivers.store(fn="upload",conn=conn,data=data2)
-            print(res2)
 
         return {
             'status':1,
@@ -140,6 +138,7 @@ async def fetch(conn, user_id: str, role: str):
                     if res["date"] else None,
                 "size": float(res["size"])
                     if res["size"] is not None else 0,
+                "receivers": res["receivers"],
                 "file_data": file_data
             }
 
@@ -178,6 +177,7 @@ async def fetch(conn, user_id: str, role: str):
                     if res["date"] else None,
                 "size": float(res["size"])
                     if res["size"] is not None else 0,
+                "sender": res["sender"],
                 "file_data": file_data
             }
 

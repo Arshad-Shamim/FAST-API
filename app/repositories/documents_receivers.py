@@ -9,7 +9,8 @@ class DOCUMENTSRECEIVERS:
                     t1.file_title,
                     t2.date,
                     t2.size,
-                    t2.file_path
+                    t2.file_path,
+                    t1.user_id as sender
                 FROM "DOCUMENT-RECEIVERS" AS t1
                 RIGHT JOIN "DOCUMENTS-METADATA" AS t2
                     ON t1.user_id = t2.user_id

@@ -5,10 +5,25 @@ class DocumentMetadataRepository:
         if fn_name == "upload":
             return await conn.fetch(
                 """
-                SELECT user_id, file_title, date, size, file_path
-                FROM "DOCUMENTS-METADATA"
-                WHERE user_id=$1
-                ORDER BY date DESC
+                SELECT 
+                    t1.user_id,
+                    t1.file_title,
+                    t1.date,
+                    t1.size,
+                    t1.file_path,
+                    ARRAY_AGG(t2.receiver) AS receivers
+                FROM "DOCUMENTS-METADATA" AS t1
+                JOIN "DOCUMENT-RECEIVERS" AS t2
+                    ON t1.user_id = t2.user_id
+                    AND t1.file_title = t2.file_title
+                WHERE t1.user_id = $1
+                GROUP BY
+                    t1.user_id,
+                    t1.file_title,
+                    t1.date,
+                    t1.size,
+                    t1.file_path
+                ORDER BY t1.date DESC
                 """,
                 p["user_id"]
             )
