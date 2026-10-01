@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Response, HTTPException, File, UploadFile, Form, Header
+from fastapi import APIRouter, Depends, Response, HTTPException, File, UploadFile, status, Form, Header
 from app.db.database import get_pool
 from app.dependencies.auth import authentication
 from app.schemas.common import SignIn, Signup
@@ -39,14 +39,14 @@ async def get_leave_history(identity=Depends(authentication)):
     async with pool.acquire() as conn:
         return await leave_history(conn, identity["email"], identity["role"])
 
-@router.post("/file")
+@router.post("/file",status_code=status.HTTP_201_CREATED)
 # async def upload_file(file_title:str=Form(...),receivers:list[str]=Form(...),file: UploadFile=File(...), identity=Depends(authentication)):
 async def upload_file(user_id:str=Form(...),file_title:str=Form(...),receivers:list[str]=Form(...),file: UploadFile=File(...)):
     pool = await get_pool()
     async with pool.acquire() as conn:
         return await upload(conn,user_id=user_id,file=file,file_title=file_title,receivers=receivers)
 
-@router.get("/file")
+@router.get("/file",status_code=status.HTTP_201_CREATED)
 async def fetch_document(user_id:str=Header(...), role:str=Header(...)):
     pool = await get_pool()
     async with pool.acquire() as conn:

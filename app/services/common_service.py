@@ -2,11 +2,13 @@ import bcrypt
 from app.repositories.users import users_repo
 from app.repositories.leave_history import history_repo
 from app.utils.dates import increase_dates
-from fastapi import UploadFile, File, HTTPException, Form
+from fastapi import UploadFile, File, HTTPException
 from app.db.database import supabase
 from datetime import date
 from app.repositories.document_metadata import document_metadata_repo
 from app.repositories.documents_receivers import document_receivers
+import base64
+import traceback
 
 
 async def home(conn, email, role):
@@ -34,8 +36,15 @@ async def leave_history(conn, email, role):
     rows = increase_dates(rows, ["application_date","start_date","end_date"])
     return {"status":1,"data":rows,"msg":"success","role":0 if role=="employee" else 1}
 
-async def upload(conn,user_id: str, file: UploadFile, file_title:str=Form(...), receivers: list[str]=Form(...)):
+from fastapi import HTTPException, status
 
+async def upload(
+    conn,
+    user_id: str,
+    file: UploadFile,
+    file_title: str,
+    receivers: list[str]
+):
     try:
         file_content = await file.read()
 
@@ -53,17 +62,15 @@ async def upload(conn,user_id: str, file: UploadFile, file_title:str=Form(...), 
 
         file_size = len(file_content)
 
-
         data = {
             "user_id": user_id,
             "file_title": file_title,
             "size": file_size,
             "date": date.today(),
-            "file_path":storage_path
+            "file_path": storage_path
         }
 
-
-        res1 = await document_metadata_repo.store(
+        await document_metadata_repo.store(
             conn=conn,
             data=data,
             fn_name="upload"
@@ -71,31 +78,33 @@ async def upload(conn,user_id: str, file: UploadFile, file_title:str=Form(...), 
 
         for receiver in receivers:
             data2 = {
-                "file_title":file_title,
-                "receiver":receiver,
-                "user_id":user_id
+                "file_title": file_title,
+                "receiver": receiver,
+                "user_id": user_id
             }
-            res2 = await document_receivers.store(fn="upload",conn=conn,data=data2)
+
+            await document_receivers.store(
+                fn="upload",
+                conn=conn,
+                data=data2
+            )
 
         return {
-            'status':1,
+            "status": 1,
             "msg": "File uploaded successfully",
             "file_name": file.filename,
             "storage_path": storage_path
         }
 
     except Exception as e:
-        print("File upload error:", e)
-        import traceback
+
         traceback.print_exc()
-        return {
-            'status':0,
-            "msg":str(e.message)
-        }
+        print(e.__dict__)
 
-
-import base64
-import traceback
+        raise HTTPException(
+            status_code=int(e.status),
+            detail=str(e.message)
+        )
 
 
 async def fetch(conn, user_id: str, role: str):
@@ -193,9 +202,7 @@ async def fetch(conn, user_id: str, role: str):
         print("Fetch documents error:", e)
         traceback.print_exc()
 
-        response["status"] = 0
-        response["msg"] = str(e.message)
-        response["error"] = str(e)
-
-    return response
-
+        raise HTTPException(
+            status_code=int(e.status),
+            detail=str(e.message)
+        )
