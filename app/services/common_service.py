@@ -197,6 +197,8 @@ async def fetch(conn, user_id: str, role: str):
         response["status"] = 1
         response["msg"] = "Data fetched successfully"
 
+        return response
+    
     except Exception as e:
 
         print("Fetch documents error:", e)
