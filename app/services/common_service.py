@@ -7,6 +7,7 @@ from app.db.database import supabase
 from datetime import date
 from app.repositories.document_metadata import document_metadata_repo
 from app.repositories.documents_receivers import document_receivers
+from app.RAG.injection import inject_file
 import base64
 import traceback
 
@@ -47,7 +48,6 @@ async def upload(
 ):
     try:
         file_content = await file.read()
-
         storage_path = f"{user_id}/{file_title}"
 
         response = supabase.storage \
@@ -59,6 +59,7 @@ async def upload(
                     "content-type": file.content_type
                 }
             )
+        print("file uploade on supabase")
 
         file_size = len(file_content)
 
@@ -75,6 +76,7 @@ async def upload(
             data=data,
             fn_name="upload"
         )
+        print("Meta Data Stored")
 
         for receiver in receivers:
             data2 = {
@@ -88,6 +90,16 @@ async def upload(
                 conn=conn,
                 data=data2
             )
+        print("Receiver Data Stored")
+
+        file_name = file.filename
+        inject_file(
+            file_content=file_content,
+            file_title=file_name,
+            user_id=user_id,
+            storage_path=storage_path
+        )
+        print("Vector is created")
 
         return {
             "status": 1,
