@@ -18,11 +18,9 @@ dependencies = [
     "langchain",
     "langchain-community",
     "langchain-text-splitters",
-    "langchain-huggingface",
     "langchain-chroma",
 
     # Embeddings
-    "sentence-transformers",
 
     # File parsing
     "pypdf",

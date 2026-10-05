@@ -4,7 +4,7 @@ from langchain_chroma import Chroma
 from app.RAG.create_embedding import create_embeddings
 
 
-EMBEDDING_MODEL_NAME = "all-MiniLM-L6-v2"
+# EMBEDDING_MODEL_NAME = "all-MiniLM-L6-v2"
 
 PERSISTENT_DIRECTORY = "db/chroma_db"
 
