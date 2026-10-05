@@ -22,3 +22,4 @@ FRONTEND_ORIGIN = os.getenv("FRONTEND_ORIGIN", "*")
 
 DB_URL = os.getenv("SUPABASE_URL","")
 DB_API_KEY = os.getenv("SUPABASE_API_KEY","")
+JINA_EMBEDDING_API_KEY = os.getenv("EMBEDDING_API_KEY")
